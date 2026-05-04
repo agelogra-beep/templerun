@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { motion } from 'motion/react';
 import { Lane } from '../../types/game';
 
 interface GameProps {
