@@ -10,6 +10,12 @@
   --color-earth-mid: #5a4a3a;
   --color-gold: #ffd700;
   --color-jungle-green: #5a8a4a;
+  
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  --animate-spin-slow: spin-slow 3s linear infinite;
 }
 
 body {
