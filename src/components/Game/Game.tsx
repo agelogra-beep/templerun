@@ -54,18 +54,26 @@ export default function Game({ onGameOver }: GameProps) {
     magnetTime: 0,
   });
 
+  const [isMagnetActive, setIsMagnetActive] = useState(false);
   const [currentScore, setCurrentScore] = useState(0);
+  const [webglError, setWebglError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
     const { scene, camera, renderer, lanes, player } = gameRef.current;
     
-    // Renderer Setup
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.shadowMap.enabled = true;
-    containerRef.current.appendChild(renderer.domElement);
+    try {
+      // Renderer Setup
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.shadowMap.enabled = true;
+      containerRef.current.appendChild(renderer.domElement);
+    } catch (err) {
+      console.error("WebGL Initialization failed:", err);
+      setWebglError("Your browser or device might not support WebGL, which is required for this game.");
+      return;
+    }
 
     // Scene Setup
     scene.background = new THREE.Color(0x0d1a0d); // jungle-dark
@@ -308,6 +316,7 @@ export default function Game({ onGameOver }: GameProps) {
         gameRef.current.magnetTime -= delta;
         if (gameRef.current.magnetTime <= 0) {
           gameRef.current.magnetActive = false;
+          setIsMagnetActive(false);
         }
       }
 
@@ -402,7 +411,8 @@ export default function Game({ onGameOver }: GameProps) {
           scene.remove(p);
           gameRef.current.powerUps.splice(i, 1);
           gameRef.current.magnetActive = true;
-          gameRef.current.magnetTime = 5;
+          gameRef.current.magnetTime = 8;
+          setIsMagnetActive(true);
           continue;
         }
 
@@ -441,8 +451,23 @@ export default function Game({ onGameOver }: GameProps) {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full h-full relative cursor-none">
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 flex gap-4 pointer-events-none">
+    <div ref={containerRef} className="w-full h-full relative cursor-none bg-jungle-dark">
+      {webglError && (
+        <div className="absolute inset-0 flex items-center justify-center p-10 text-center bg-jungle-dark z-50">
+          <div className="max-w-md">
+            <h2 className="text-3xl font-black text-red-500 mb-4">SYSTEM ERROR</h2>
+            <p className="text-white/60 mb-8">{webglError}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-8 py-4 bg-jungle-green text-white font-bold rounded-xl"
+            >
+              RELOAD EXPEDITION
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 flex gap-4 pointer-events-none z-10">
         <div className="stat-box px-8 py-3 rounded-2xl shadow-2xl flex flex-col items-center">
           <p className="text-white/40 text-[10px] uppercase font-black tracking-[0.3em] mb-1">Trek Distance</p>
           <p className="text-4xl font-black text-gold leading-none tracking-tighter">
@@ -450,7 +475,7 @@ export default function Game({ onGameOver }: GameProps) {
           </p>
         </div>
         
-        {gameRef.current.magnetActive && (
+        {isMagnetActive && (
           <motion.div 
             initial={{ scale: 0, x: -20 }}
             animate={{ scale: 1, x: 0 }}

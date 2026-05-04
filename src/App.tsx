@@ -12,19 +12,19 @@ export default function App() {
     return saved ? parseInt(saved, 10) : 0;
   });
 
-  const handleStart = () => {
+  const handleStart = React.useCallback(() => {
     setScore(0);
     setStatus(GameStatus.PLAYING);
-  };
+  }, []);
 
-  const handleGameOver = (finalScore: number) => {
+  const handleGameOver = React.useCallback((finalScore: number) => {
     setScore(finalScore);
     if (finalScore > highScore) {
       setHighScore(finalScore);
       localStorage.setItem('temple_runner_high_score', finalScore.toString());
     }
     setStatus(GameStatus.GAME_OVER);
-  };
+  }, [highScore]);
 
   return (
     <div className="relative w-full h-screen bg-neutral-900 overflow-hidden font-sans">
