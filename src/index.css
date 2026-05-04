@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-jungle-dark: #0d1a0d;
+  --color-jungle-mid: #1a2b1a;
+  --color-jungle-light: #2d4a2d;
+  --color-earth-dark: #3e2d1d;
+  --color-earth-mid: #5a4a3a;
+  --color-gold: #ffd700;
+  --color-jungle-green: #5a8a4a;
+}
+
+body {
+  background-color: var(--color-jungle-mid);
+  color: white;
+}
+
+.game-title-shadow {
+  text-shadow: 4px 4px 0 #4b3621, 8px 8px 0 rgba(0,0,0,0.5);
+}
+
+.stat-box {
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid var(--color-earth-mid);
+  backdrop-filter: blur(4px);
+}
